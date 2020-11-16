@@ -18,6 +18,9 @@
 		08CE2BB22285BCE700183A1B /* XCTestCase+FailableDeleteFeedStoreSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CE2BAD2285BCE700183A1B /* XCTestCase+FailableDeleteFeedStoreSpecs.swift */; };
 		08CE2BB32285BCE700183A1B /* XCTestCase+FailableInsertFeedStoreSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CE2BAE2285BCE700183A1B /* XCTestCase+FailableInsertFeedStoreSpecs.swift */; };
 		08CE2BB52285BEF100183A1B /* FeedStoreChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CE2BB42285BEF100183A1B /* FeedStoreChallengeTests.swift */; };
+		4B709A44255EEBB000E10CF1 /* CoreDataFeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B709A43255EEBB000E10CF1 /* CoreDataFeedStore.swift */; };
+		4BFAB3212563009C0024B346 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFAB3202563009C0024B346 /* Constants.swift */; };
+		4BFAB328256301610024B346 /* CDFeedStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4BFAB326256301610024B346 /* CDFeedStore.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		08CE2BAD2285BCE700183A1B /* XCTestCase+FailableDeleteFeedStoreSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FailableDeleteFeedStoreSpecs.swift"; sourceTree = "<group>"; };
 		08CE2BAE2285BCE700183A1B /* XCTestCase+FailableInsertFeedStoreSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FailableInsertFeedStoreSpecs.swift"; sourceTree = "<group>"; };
 		08CE2BB42285BEF100183A1B /* FeedStoreChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStoreChallengeTests.swift; sourceTree = "<group>"; };
+		4B709A43255EEBB000E10CF1 /* CoreDataFeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFeedStore.swift; sourceTree = "<group>"; };
+		4BFAB3202563009C0024B346 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4BFAB327256301610024B346 /* CDFeedStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CDFeedStore.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +93,8 @@
 		08CE2B8D2285BBD100183A1B /* FeedStoreChallenge */ = {
 			isa = PBXGroup;
 			children = (
+				4BFAB31F256300900024B346 /* Helper */,
+				4BFAB31D2563005C0024B346 /* FeedStore */,
 				08CE2BA72285BCC600183A1B /* LocalFeedImage.swift */,
 				08CE2BA52285BCB600183A1B /* FeedStore.swift */,
 				08CE2B8F2285BBD100183A1B /* Info.plist */,
@@ -116,6 +124,31 @@
 				084BB13D24FE56830091C705 /* XCTestCase+FeedStoreHelpers.swift */,
 			);
 			path = FeedStoreSpecs;
+			sourceTree = "<group>";
+		};
+		4BFAB31D2563005C0024B346 /* FeedStore */ = {
+			isa = PBXGroup;
+			children = (
+				4BFAB31E256300810024B346 /* CoreData */,
+			);
+			path = FeedStore;
+			sourceTree = "<group>";
+		};
+		4BFAB31E256300810024B346 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				4B709A43255EEBB000E10CF1 /* CoreDataFeedStore.swift */,
+				4BFAB326256301610024B346 /* CDFeedStore.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		4BFAB31F256300900024B346 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				4BFAB3202563009C0024B346 /* Constants.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,8 +261,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B709A44255EEBB000E10CF1 /* CoreDataFeedStore.swift in Sources */,
 				08CE2BA62285BCB600183A1B /* FeedStore.swift in Sources */,
 				08CE2BA82285BCC600183A1B /* LocalFeedImage.swift in Sources */,
+				4BFAB3212563009C0024B346 /* Constants.swift in Sources */,
+				4BFAB328256301610024B346 /* CDFeedStore.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +544,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4BFAB326256301610024B346 /* CDFeedStore.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4BFAB327256301610024B346 /* CDFeedStore.xcdatamodel */,
+			);
+			currentVersion = 4BFAB327256301610024B346 /* CDFeedStore.xcdatamodel */;
+			path = CDFeedStore.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 08CE2B822285BBD100183A1B /* Project object */;
 }
