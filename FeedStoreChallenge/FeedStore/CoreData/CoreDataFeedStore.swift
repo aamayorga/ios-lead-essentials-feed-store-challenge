@@ -45,7 +45,21 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        completion(.none)
+        do {
+            if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
+                managedContext.delete(currentCache)
+                
+                if let saveError = saveContext() {
+                    completion(.some(saveError))
+                } else {
+                    completion(.none)
+                }
+            } else {
+                completion(.none)
+            }
+        } catch {
+            completion(.some(error))
+        }
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
@@ -53,7 +67,7 @@ public class CoreDataFeedStore: FeedStore {
             if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
                 managedContext.delete(currentCache)
             }
-        } catch { /* If there is an error then just insert the feed in Core Data*/}
+        } catch { /* If there is an error then just insert the feed in Core Data*/ }
         
         let cdFeed = mapLocalFeedToCoreDataFeed(feed, timestamp: timestamp)
         
