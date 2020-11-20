@@ -10,5 +10,5 @@ import Foundation
 
 public struct Constant {
     static let CORE_DATA_FEED_STORE_NAME = "CDFeedStore"
-    static let CORE_DATA_CDCACHE_ENTITY_NAME = "CDCache"
+    static let CORE_DATA_EXTENSION = "momd"
 }
