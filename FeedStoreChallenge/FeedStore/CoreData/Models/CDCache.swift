@@ -14,3 +14,11 @@ internal class CDCache: NSManagedObject {
     @NSManaged internal var timestamp: Date
     @NSManaged internal var feed: NSOrderedSet
 }
+
+extension CDCache {
+    public static func fetchCachedFeed(_ context: NSManagedObjectContext) throws -> CDCache? {
+        let fetchRequest = NSFetchRequest<CDCache>(entityName: entity().name!)
+        return try context.fetch(fetchRequest).first
+    }
+}
+

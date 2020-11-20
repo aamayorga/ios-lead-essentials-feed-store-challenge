@@ -20,13 +20,11 @@ public class CoreDataFeedStore: FeedStore {
     private let managedContext: NSManagedObjectContext
     
     public init(modelName name: String, url: URL, in bundle: Bundle) throws {
-        
-        guard let model = bundle.url(forResource: name, withExtension: "momd").flatMap({ (url) in
+        guard let model = bundle.url(forResource: name, withExtension: Constant.CORE_DATA_EXTENSION).flatMap({ (url) in
             NSManagedObjectModel(contentsOf: url)
         }) else {
             throw LoadingError.modelNotFound
         }
-        
         let description = NSPersistentStoreDescription(url: url)
         
         storeContainer = NSPersistentContainer(name: name, managedObjectModel: model)
@@ -51,7 +49,13 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        _ = mapLocalFeedToCoreData(feed, timestamp: timestamp)
+        do {
+            if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
+                managedContext.delete(currentCache)
+            }
+        } catch { /* If there is an error then just insert the feed in Core Data*/}
+        
+        let cdFeed = mapLocalFeedToCoreDataFeed(feed, timestamp: timestamp)
         
         if let saveError = saveContext() {
             completion(.some(saveError))
@@ -62,8 +66,8 @@ public class CoreDataFeedStore: FeedStore {
     
     public func retrieve(completion: @escaping RetrievalCompletion) {
         do {
-            if let cache = try fetchCachedFeed() {
-                let imageFeed: [LocalFeedImage] = cache.feed.compactMap { ($0 as? CDFeedImage)?.local }
+            if let cache = try CDCache.fetchCachedFeed(managedContext) {
+                let imageFeed = cache.feed.compactMap { ($0 as? CDFeedImage)?.local }
                 completion(.found(feed: imageFeed, timestamp: cache.timestamp))
             } else {
                 completion(.empty)
@@ -90,33 +94,10 @@ public class CoreDataFeedStore: FeedStore {
         }
     }
     
-    private func mapLocalFeedToCoreData(_ feed: [LocalFeedImage], timestamp: Date) -> CDCache {
-        
-        var imageSet: [CDFeedImage] = []
-        
-        for image in feed {
-            
-            let cdImage = CDFeedImage(context: managedContext)
-            
-            cdImage.id = image.id
-            cdImage.url = image.url
-            cdImage.imageDescription = image.description
-            cdImage.location = image.location
-            
-            imageSet.append(cdImage)
-        }
-        
-        let images = NSOrderedSet(array: imageSet)
+    private func mapLocalFeedToCoreDataFeed(_ feed: [LocalFeedImage], timestamp: Date) -> CDCache {
         let cache = CDCache(context: managedContext)
-        
-        cache.feed = images
+        cache.feed = CDFeedImage.mapLocalFeedImagesToCoreDataFeedImages(from: feed, in: managedContext)
         cache.timestamp = timestamp
-        
         return cache
-    }
-    
-    private func fetchCachedFeed() throws -> CDCache? {
-        let fetchRequest = NSFetchRequest<CDCache>(entityName: Constant.CORE_DATA_CDCACHE_ENTITY_NAME)
-        return try managedContext.fetch(fetchRequest).first
     }
 }
