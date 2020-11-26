@@ -114,4 +114,12 @@ public class CoreDataFeedStore: FeedStore {
         cache.timestamp = timestamp
         return cache
     }
+    
+    private func deleteCache() throws {
+        do {
+            if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
+                managedContext.delete(currentCache)
+            }
+        } catch { /* If there is an error then just insert the feed in Core Data*/ }
+    }
 }
