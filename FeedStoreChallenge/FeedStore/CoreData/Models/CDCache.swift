@@ -6,7 +6,6 @@
 //  Copyright © 2020 Essential Developer. All rights reserved.
 //
 
-import Foundation
 import CoreData
 
 @objc(CDCache)
@@ -17,7 +16,7 @@ internal class CDCache: NSManagedObject {
 
 extension CDCache {
     public static func fetchCachedFeed(_ context: NSManagedObjectContext) throws -> CDCache? {
-        let fetchRequest = NSFetchRequest<CDCache>(entityName: entity().name!)
+        let fetchRequest = NSFetchRequest<CDCache>(entityName: Constant.CORE_DATA_CACHE)
         return try context.fetch(fetchRequest).first
     }
 }
