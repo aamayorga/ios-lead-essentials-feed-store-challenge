@@ -31,20 +31,20 @@ class FeedStoreIntegrationTests: XCTestCase {
     }
     
     func test_retrieve_deliversEmptyOnEmptyCache() {
-        let sut = makeSUT()
-
-        expect(sut, toRetrieve: .empty)
+//        let sut = makeSUT()
+//
+//        expect(sut, toRetrieve: .empty)
     }
 
     func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
-//        let storeToInsert = makeSUT()
-//        let storeToLoad = makeSUT()
-//        let feed = uniqueImageFeed()
-//        let timestamp = Date()
-//
-//        insert((feed, timestamp), to: storeToInsert)
-//
-//        expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
+        let storeToInsert = makeSUT()
+        let storeToLoad = makeSUT()
+        let feed = uniqueImageFeed()
+        let timestamp = Date()
+
+        insert((feed, timestamp), to: storeToInsert)
+
+        expect(storeToLoad, toRetrieve: .found(feed: feed, timestamp: timestamp))
     }
     
     func test_insert_overridesFeedInsertedOnAnotherInstance() {
@@ -78,15 +78,21 @@ class FeedStoreIntegrationTests: XCTestCase {
     private func makeSUT() -> FeedStore {
         let storeBundle = Bundle(for: CoreDataFeedStore.self)
         let storeURL = testSpecificStoreURL()
-        return try! CoreDataFeedStore(modelName: "CDFeedStore", url: storeURL, in: storeBundle)
+        let sut = try! CoreDataFeedStore(url: storeURL, in: storeBundle)
+        trackForMemoryLeak(sut)
+        return sut
     }
     
     private func setupEmptyStoreState() {
-
+        removeArtifcats()
     }
 
     private func undoStoreSideEffects() {
-
+        removeArtifcats()
+    }
+    
+    private func removeArtifcats() {
+        try? FileManager.default.removeItem(at: testSpecificStoreURL())
     }
     
     private func testSpecificStoreURL() -> URL {
