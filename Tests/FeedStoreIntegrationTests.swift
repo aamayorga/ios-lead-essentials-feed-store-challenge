@@ -84,14 +84,14 @@ class FeedStoreIntegrationTests: XCTestCase {
     }
     
     private func setupEmptyStoreState() {
-        removeArtifcats()
+        removeArtifacts()
     }
 
     private func undoStoreSideEffects() {
-        removeArtifcats()
+        removeArtifacts()
     }
     
-    private func removeArtifcats() {
+    private func removeArtifacts() {
         try? FileManager.default.removeItem(at: testSpecificStoreURL())
     }
     
