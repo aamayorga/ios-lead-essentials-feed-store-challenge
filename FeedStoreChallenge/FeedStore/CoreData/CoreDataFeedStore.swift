@@ -19,7 +19,7 @@ public class CoreDataFeedStore: FeedStore {
     private let storeContainer: NSPersistentContainer
     private let managedContext: NSManagedObjectContext
     
-    public init(modelName name: String, url: URL, in bundle: Bundle) throws {
+    public init(modelName name: String = "CDFeedStore", url: URL, in bundle: Bundle) throws {
         guard let model = bundle.url(forResource: name, withExtension: Constant.CORE_DATA_EXTENSION).flatMap({ (url) in
             NSManagedObjectModel(contentsOf: url)
         }) else {
@@ -96,9 +96,9 @@ public class CoreDataFeedStore: FeedStore {
     // MARK: Helper Methods
     
     private func saveContext() -> Error? {
-        if storeContainer.viewContext.hasChanges {
+        if managedContext.hasChanges {
             do {
-                try storeContainer.viewContext.save()
+                try managedContext.save()
                 return nil
             } catch {
                 return error
