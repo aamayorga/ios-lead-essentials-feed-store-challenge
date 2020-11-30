@@ -120,6 +120,8 @@ public class CoreDataFeedStore: FeedStore {
             if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
                 managedContext.delete(currentCache)
             }
-        } catch { /* If there is an error then just insert the feed in Core Data*/ }
+        } catch {
+            throw LoadingError.failedToLoadPersistentStores(error)
+        }
     }
 }
