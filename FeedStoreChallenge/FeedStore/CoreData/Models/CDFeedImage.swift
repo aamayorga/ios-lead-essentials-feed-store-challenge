@@ -6,7 +6,6 @@
 //  Copyright © 2020 Essential Developer. All rights reserved.
 //
 
-import Foundation
 import CoreData
 
 @objc(CDFeedImage)
