@@ -31,9 +31,9 @@ class FeedStoreIntegrationTests: XCTestCase {
     }
     
     func test_retrieve_deliversEmptyOnEmptyCache() {
-//        let sut = makeSUT()
-//
-//        expect(sut, toRetrieve: .empty)
+        let sut = makeSUT()
+
+        expect(sut, toRetrieve: .empty)
     }
 
     func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
@@ -62,15 +62,15 @@ class FeedStoreIntegrationTests: XCTestCase {
     }
     
     func test_delete_deletesFeedInsertedOnAnotherInstance() {
-//        let storeToInsert = makeSUT()
-//        let storeToDelete = makeSUT()
-//        let storeToLoad = makeSUT()
-//
-//        insert((uniqueImageFeed(), Date()), to: storeToInsert)
-//
-//        deleteCache(from: storeToDelete)
-//
-//        expect(storeToLoad, toRetrieve: .empty)
+        let storeToInsert = makeSUT()
+        let storeToDelete = makeSUT()
+        let storeToLoad = makeSUT()
+
+        insert((uniqueImageFeed(), Date()), to: storeToInsert)
+
+        deleteCache(from: storeToDelete)
+
+        expect(storeToLoad, toRetrieve: .empty)
     }
     
     // - MARK: Helpers
