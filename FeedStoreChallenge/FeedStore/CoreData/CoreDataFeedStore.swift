@@ -14,6 +14,7 @@ public class CoreDataFeedStore: FeedStore {
     enum LoadingError: Swift.Error {
         case modelNotFound
         case failedToLoadPersistentStores(Swift.Error)
+        case saveError
     }
     
     private let storeContainer: NSPersistentContainer
@@ -49,10 +50,11 @@ public class CoreDataFeedStore: FeedStore {
             if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
                 managedContext.delete(currentCache)
                 
-                if let saveError = saveContext() {
-                    completion(.some(saveError))
-                } else {
+                do {
+                    try saveContext()
                     completion(.none)
+                } catch {
+                    completion(.some(error))
                 }
             } else {
                 completion(.none)
@@ -63,18 +65,17 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        do {
-            if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
-                managedContext.delete(currentCache)
-            }
-        } catch { /* If there is an error then just insert the feed in Core Data*/ }
+        if let currentCache = try! CDCache.fetchCachedFeed(managedContext) {
+            managedContext.delete(currentCache)
+        }
         
         let cdFeed = mapLocalFeedToCoreDataFeed(feed, timestamp: timestamp)
         
-        if let saveError = saveContext() {
-            completion(.some(saveError))
-        } else {
+        do {
+            try saveContext()
             completion(.none)
+        } catch {
+            completion(.some(error))
         }
     }
     
@@ -95,16 +96,13 @@ public class CoreDataFeedStore: FeedStore {
     
     // MARK: Helper Methods
     
-    private func saveContext() -> Error? {
+    private func saveContext() throws {
         if managedContext.hasChanges {
             do {
                 try managedContext.save()
-                return nil
             } catch {
-                return error
+                throw LoadingError.saveError
             }
-        } else {
-            return nil
         }
     }
     
