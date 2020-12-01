@@ -46,49 +46,53 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        do {
-            if let currentCache = try CDCache.fetchCachedFeed(managedContext) {
-                managedContext.delete(currentCache)
-                
-                do {
-                    try saveContext()
+        let context = managedContext
+        context.perform {
+            do {
+                if let currentCache = try CDCache.fetchCachedFeed(context) {
+                    context.delete(currentCache)
+                    try context.save()
                     completion(.none)
-                } catch {
-                    completion(.some(error))
+                } else {
+                    completion(.none)
                 }
-            } else {
-                completion(.none)
+            } catch {
+                completion(.some(error))
             }
-        } catch {
-            completion(.some(error))
         }
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        if let currentCache = try! CDCache.fetchCachedFeed(managedContext) {
-            managedContext.delete(currentCache)
-        }
-        
-        let cdFeed = mapLocalFeedToCoreDataFeed(feed, timestamp: timestamp)
-        
-        do {
-            try saveContext()
-            completion(.none)
-        } catch {
-            completion(.some(error))
+        let context = managedContext
+        context.perform { [weak self] in
+            if let currentCache = try! CDCache.fetchCachedFeed(context) {
+                context.delete(currentCache)
+            }
+            
+            _ = self!.mapLocalFeedToCoreDataFeed(feed, timestamp: timestamp)
+            
+            do {
+                try context.save()
+                completion(.none)
+            } catch {
+                completion(.some(error))
+            }
         }
     }
     
     public func retrieve(completion: @escaping RetrievalCompletion) {
-        do {
-            if let cache = try CDCache.fetchCachedFeed(managedContext) {
-                let imageFeed = cache.feed.compactMap { ($0 as? CDFeedImage)?.local }
-                completion(.found(feed: imageFeed, timestamp: cache.timestamp))
-            } else {
-                completion(.empty)
+        let context = managedContext
+        context.perform {
+            do {
+                if let cache = try CDCache.fetchCachedFeed(context) {
+                    let imageFeed = cache.feed.compactMap { ($0 as? CDFeedImage)?.local }
+                    completion(.found(feed: imageFeed, timestamp: cache.timestamp))
+                } else {
+                    completion(.empty)
+                }
+            } catch {
+                completion(.failure(error))
             }
-        } catch {
-            completion(.failure(error))
         }
     }
     
