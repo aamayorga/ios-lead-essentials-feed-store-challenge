@@ -14,7 +14,6 @@ public class CoreDataFeedStore: FeedStore {
     enum LoadingError: Swift.Error {
         case modelNotFound
         case failedToLoadPersistentStores(Swift.Error)
-        case saveError
     }
     
     private let storeContainer: NSPersistentContainer
@@ -99,17 +98,6 @@ public class CoreDataFeedStore: FeedStore {
     
     
     // MARK: Helper Methods
-    
-    private func saveContext() throws {
-        if managedContext.hasChanges {
-            do {
-                try managedContext.save()
-            } catch {
-                throw LoadingError.saveError
-            }
-        }
-    }
-    
     private func mapLocalFeedToCoreDataFeed(_ feed: [LocalFeedImage], timestamp: Date) -> CDCache {
         let cache = CDCache(context: managedContext)
         cache.feed = CDFeedImage.mapLocalFeedImagesToCoreDataFeedImages(from: feed, in: managedContext)
